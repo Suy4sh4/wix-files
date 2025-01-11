@@ -339,28 +339,25 @@ function addCityTemples(city) {
     });
 }
 
-// Function to get user location with the described logic
+// Function to get and track the user’s live location
 function getUserLocation() {
     // Check if the user has already made a decision on location access
     const locationStatus = localStorage.getItem('locationPermissionStatus');
 
     if (navigator.geolocation) {
         if (locationStatus === 'approved') {
-            // User previously approved, try to get the current location
-            navigator.geolocation.getCurrentPosition(
-                showUserLocation,
-                locationError,
-                { enableHighAccuracy: true, maximumAge: 300000, timeout: 10000 }
+            // User previously approved, try to get and watch the current location
+            navigator.geolocation.watchPosition(
+                showUserLocation,  // Function to handle location update
+                locationError,     // Function to handle errors
+                { enableHighAccuracy: true, maximumAge: 30000, timeout: 10000 } // Options for geolocation
             );
         } else if (locationStatus === 'denied') {
             // User denied previously, keep asking on every visit
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    showUserLocation(position);
-                },
-                function(error) {
-                    locationError(error);
-                }
+            navigator.geolocation.watchPosition(
+                showUserLocation,
+                locationError,
+                { enableHighAccuracy: true, maximumAge: 30000, timeout: 10000 }
             );
         } else {
             // First visit, ask for location
@@ -410,7 +407,7 @@ function initializeMapWithoutLocation() {
     // Continue with map functionalities without user location
 }
 
-// Function to show user location on the map (with icon)
+// Function to show and update user location on the map (with icon)
 function showUserLocation(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
@@ -418,31 +415,120 @@ function showUserLocation(position) {
     // Set map view to the user's location
     map.setView([lat, lon], 12); // Zoom in to the user's location
 
-    // Add a custom marker for the user's location
-    L.marker([lat, lon], {
-        icon: L.divIcon({
-            className: 'leaflet-div-icon',
-            html: '<img src="https://cdn-icons-png.flaticon.com/512/9986/9986343.png" style="width: 30px; height: 30px;"/>', // Custom icon
-            iconSize: [30, 30],
-        })
-    }).addTo(map).bindPopup("You are here!");
-
-    // Optionally update location every few seconds if you want live tracking
-    navigator.geolocation.watchPosition(function(position) {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-
-        // Update the map with the new location
-        map.setView([lat, lon], 12);
-        L.marker([lat, lon], {
+    // Remove existing user marker if any
+    if (userMarker) {
+        userMarker.setLatLng([lat, lon]);
+    } else {
+        // Add a custom marker for the user's location
+        userMarker = L.marker([lat, lon], {
             icon: L.divIcon({
                 className: 'leaflet-div-icon',
                 html: '<img src="https://cdn-icons-png.flaticon.com/512/9986/9986343.png" style="width: 30px; height: 30px;"/>', // Custom icon
                 iconSize: [30, 30],
             })
         }).addTo(map).bindPopup("You are here!");
-    }, locationError, { enableHighAccuracy: true, maximumAge: 30000 });
+    }
+
+    // Optionally, you can update live location every few seconds if needed
+    // watchPosition is already handling continuous updates
 }
+
+// Call this function on page load to manage the location access flow
+getUserLocation();let userMarker;  // Store the single user marker
+let watchId;     // Store the watch position ID
+
+// Function to get and track the user’s live location
+function getUserLocation() {
+    const locationStatus = localStorage.getItem('locationPermissionStatus');
+
+    if (navigator.geolocation) {
+        if (locationStatus === 'approved') {
+            // User previously approved, start tracking location
+            watchId = navigator.geolocation.watchPosition(
+                showUserLocation, 
+                locationError,     
+                { enableHighAccuracy: true, maximumAge: 30000, timeout: 10000 }
+            );
+        } else if (locationStatus === 'denied') {
+            // User denied previously, ask again on every visit
+            navigator.geolocation.getCurrentPosition(
+                showUserLocation,
+                locationError,
+                { enableHighAccuracy: true, maximumAge: 30000, timeout: 10000 }
+            );
+        } else {
+            // First visit, ask for location and save approval status
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    localStorage.setItem('locationPermissionStatus', 'approved');
+                    showUserLocation(position);
+                },
+                locationError
+            );
+        }
+    } else {
+        alert("Geolocation is not supported by this browser.");
+        initializeMapWithoutLocation();
+    }
+}
+
+// Function to handle location errors
+function locationError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            alert("Location access denied.");
+            localStorage.setItem('locationPermissionStatus', 'denied'); // Store denial
+            initializeMapWithoutLocation();
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable.");
+            initializeMapWithoutLocation();
+            break;
+        case error.TIMEOUT:
+            alert("The request to get user location timed out.");
+            initializeMapWithoutLocation();
+            break;
+        case error.UNKNOWN_ERROR:
+            alert("An unknown error occurred.");
+            initializeMapWithoutLocation();
+            break;
+    }
+}
+
+// Function to initialize map without user location (fallback)
+function initializeMapWithoutLocation() {
+    map.setView([19.0760, 72.8777], 6); // Default location (Mumbai, Maharashtra)
+}
+
+// Function to show and update user location on the map (with icon)
+function showUserLocation(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    // Set map view to the user's location
+    map.setView([lat, lon], 12); // Zoom in to the user's location
+
+    // Update the existing user marker position or create a new one if not already there
+    if (userMarker) {
+        userMarker.setLatLng([lat, lon]);  // Update marker position
+    } else {
+        // Create and add the user marker on first time
+        userMarker = L.marker([lat, lon], {
+            icon: L.divIcon({
+                className: 'leaflet-div-icon',
+                html: '<img src="https://cdn-icons-png.flaticon.com/512/9986/9986343.png" style="width: 30px; height: 30px;"/>', // Custom icon
+                iconSize: [30, 30],
+            })
+        }).addTo(map).bindPopup("You are here!");
+    }
+}
+
+// Stop watching the location when the user leaves the page or closes the tab
+window.addEventListener('beforeunload', function() {
+    if (watchId) {
+        navigator.geolocation.clearWatch(watchId);  // Stop tracking when leaving the page
+    }
+});
 
 // Call this function on page load to manage the location access flow
 getUserLocation();
