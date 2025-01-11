@@ -78,10 +78,6 @@ h1 {
     margin: 10px 0; /* Reduced margin to move the button up */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease-in-out;
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%); /* Center horizontally */
 }
 
 /* Start Navigation Button Hover and Active States */
@@ -122,8 +118,7 @@ h1 {
 .plan-trip, .start-trip {
     position: absolute;
     bottom: 20px; /* Positioned at the bottom */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Center alignment */
+    right: 20px; /* Aligned to the right */
     background-color: rgba(0, 121, 107, 0.9); /* Darker Teal for consistency */
     color: white;
     padding: 14px 24px; /* Increased padding for better touch interaction */
@@ -164,6 +159,7 @@ h1 {
 @media (max-width: 768px) {
     .container {
         width: 95%;
+        margin: 0 auto; /* Center the container */
     }
 
     h1 {
@@ -172,6 +168,7 @@ h1 {
 
     #map {
         height: 400px;
+        position: relative; /* Ensure map container is the reference point for absolute positioning */
     }
 
     /* Make the weather info box smaller on mobile */
@@ -182,15 +179,76 @@ h1 {
 
     /* Adjust navigation button for mobile screens */
     .start-navigation, .plan-trip, .start-trip {
-        width: 80%; /* Adjust width for mobile */
-        padding: 12px;
-        font-size: 1em;
-        left: 50%; /* Center horizontally */
-        transform: translateX(-50%); /* Center alignment */
+        width: 80%;
+        max-width: 280px; /* Ensure buttons don’t grow too wide */
+        padding: 14px 18px;
+        font-size: 1.1em;
+        margin: 8px auto; /* Space between buttons, auto for centering */
+        box-sizing: border-box; /* Include padding and border in width */
+        display: block; /* Ensure buttons stack vertically */
+        border-radius: 30px; /* Rounded corners for a modern look */
+        text-align: center; /* Center button text */
+        font-weight: bold;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
     }
 
+    .plan-trip, .start-navigation, .start-trip {
+        background-color: rgba(0, 121, 107, 0.9); /* Consistent teal for buttons */
+        color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Hover and focus states for buttons */
+    .plan-trip:hover, .start-navigation:hover, .start-trip:hover {
+        background-color: rgba(0, 121, 107, 1); /* Darker shade on hover */
+    }
+
+    .plan-trip:focus, .start-navigation:focus, .start-trip:focus {
+        outline: none; /* Remove focus outline */
+        box-shadow: 0 0 10px rgba(0, 121, 107, 0.7); /* Focus glow effect */
+    }
+
+    /* Plan Trip Button (centered) */
     .plan-trip {
-        font-size: 0.9em; /* Smaller font size for mobile */
-        padding: 10px 20px; /* Smaller padding */
+        position: absolute; /* Absolute position inside the map */
+        bottom: 20px; /* Place it near the bottom of the map */
+        left: 50%; /* Center horizontally */
+        transform: translateX(-50%); /* Ensure it's centered */
+        width: 250px; /* Fixed width */
+    }
+
+    /* Start Navigation Button - Centered Below the Map */
+    .start-navigation {
+        position: absolute; /* Use absolute positioning */
+        bottom: 75px; /* Position the button closer to the map by reducing this value */
+        left: 50%; /* Center horizontally */
+        transform: translateX(-50%); /* Keep it centered */
+        width: 250px; /* Fixed width */
+    }
+
+    /* Start Trip Button */
+    .start-trip {
+        position: absolute; /* Fixed positioning inside the map */
+        bottom: 10px; /* Adjusted placement for better alignment */
+        left: 50%; /* Center horizontally */
+        transform: translateX(-50%); /* Keep it centered */
+        width: 250px; /* Fixed width */
+    }
+
+    /* Prevent active state shifts or teleportation */
+    .plan-trip:active, .start-navigation:active, .start-trip:active {
+        transform: translateX(-50%); /* Keep the button centered */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Maintain shadow */
+    }
+
+    /* Ensure buttons are not too far apart */
+    .start-navigation, .plan-trip, .start-trip {
+        left: 50%;
+        transform: translateX(-50%) !important; /* Force proper centering */
+    }
+
+    /* Remove focus and active styles on the map button */
+    .plan-trip:focus, .start-navigation:focus, .start-trip:focus {
+        outline: none;
     }
 }
