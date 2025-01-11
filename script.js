@@ -79,20 +79,28 @@ function clearMarkers(city) {
     }
 }
 
-// Function to display weather information for a selected temple
-function displayWeather(templeCoords) {
-    const weatherBox = document.querySelector('.weather-info-box');
-    if (weatherBox) weatherBox.remove(); // Clear old weather box
+// Global variable to track the current weather box
+let currentWeatherBox = null;
 
+// Function to create and display weather info
+function displayWeather(templeCoords) {
+    // Remove the current weather box if it exists
+    if (currentWeatherBox) {
+        currentWeatherBox.remove();
+    }
+
+    // Fetch the weather data and display it
     getWeatherData(templeCoords[0], templeCoords[1])
         .then(weather => {
-            const newWeatherBox = document.createElement('div');
-            newWeatherBox.classList.add('weather-info-box');
-            newWeatherBox.innerHTML = `
+            // Create a new weather box for the selected temple
+            currentWeatherBox = L.DomUtil.create('div', 'weather-info-box');
+            currentWeatherBox.innerHTML = `
                 <p>Temperature: ${weather.temperature}°C</p>
                 <p>Weather: ${getWeatherEmoji(weather.weatherCode)}</p>
             `;
-            document.getElementById('map').appendChild(newWeatherBox);
+
+            // Add the weather box inside the map container
+            document.getElementById('map').appendChild(currentWeatherBox);
         })
         .catch(error => {
             console.error('Failed to fetch weather data:', error);
@@ -119,7 +127,6 @@ function getWeatherData(lat, lon) {
             return { temperature: 'N/A', weatherCode: 0 }; // Fallback weather
         });
 }
-
 
 // Helper function to map weather codes to emojis
 function getWeatherEmoji(code) {
@@ -171,9 +178,38 @@ function addCityTemples(city) {
     });
 }
 
-// Event listener for zoom changes
+// Event listener for zoom changes to handle weather box and markers
 map.on('zoomend', function () {
     if (map.getZoom() < 12) {
-        Object.keys(cityMarkers).forEach(clearMarkers); // Clear all temple markers
+        // Clear all temple markers when zoomed out
+        Object.keys(cityMarkers).forEach(clearMarkers);
+        if (currentWeatherBox) {
+            currentWeatherBox.remove(); // Remove weather box if zoomed out
+        }
     }
 });
+
+// Event listener for city blips
+function createCityBlip(city, coordinates) {
+    var cityBlip = L.marker(coordinates, { icon: createTempleIcon() })
+        .addTo(map)
+        .bindPopup(`${city.charAt(0).toUpperCase() + city.slice(1)} City`);
+
+    cityBlip.on('click', function () {
+        map.flyTo(coordinates, 12, { duration: 1 }); // Zoom to city
+        addCityTemples(city); // Add temples inside the city
+        if (currentWeatherBox) {
+            currentWeatherBox.remove(); // Remove previous weather box
+        }
+    });
+}
+
+// City marker creation and handling
+Object.keys(cityCoordinates).forEach(function (city) {
+    createCityBlip(city, cityCoordinates[city]);
+});
+
+// For mobile optimization: Reduce map responsiveness for smoother performance
+map.options.touchZoom = true; // Enable touch zoom for mobile
+map.options.scrollWheelZoom = false; // Disable scroll zoom for smoother zoom transitions on mobile
+
