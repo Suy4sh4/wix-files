@@ -405,17 +405,21 @@ function initializeMapWithoutLocation() {
     map.setView([19.0760, 72.8777], 6); // Default location (Mumbai, Maharashtra)
 }
 
-// Function to show and update user location on the map (with icon)
+let isFirstUpdate = true; // Flag to track the first update
+
 function showUserLocation(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
 
-    // Set map view to the user's location
-    map.setView([lat, lon], 12); // Zoom in to the user's location
+    // Only set the map view on the first location update
+    if (isFirstUpdate) {
+        map.setView([lat, lon], 12); // Set initial map view
+        isFirstUpdate = false; // Prevent further auto-centering
+    }
 
     // Update the existing user marker position or create a new one if not already there
     if (userMarker) {
-        userMarker.setLatLng([lat, lon]);  // Update marker position
+        userMarker.setLatLng([lat, lon]); // Update marker position without re-centering the map
     } else {
         // Create and add the user marker on first time
         userMarker = L.marker([lat, lon], {
