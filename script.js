@@ -1,4 +1,3 @@
-// Initialize map
 var map = L.map('map').setView([19.0760, 72.8777], 6); // Default view: Maharashtra
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -48,7 +47,6 @@ var cityTemples = {
         {coords: [20.8866422, 74.7671309], name: "Temple I", link: "https://www.google.com/maps/place/Dhule,+Maharashtra/@20.8866,74.7671,101a,35y,85.55h,77.23t/data=!3m1!1e3!4m6!3m5!1s0x3bdba09abcd3!8m2!3d20.8867!4d74.7672!16zL20vMDJucGs3"}
     ]
 };
-
 // City markers storage
 var cityMarkers = {};
 
@@ -61,6 +59,9 @@ function createCityBlip(city, coordinates) {
     cityBlip.on('click', function () {
         map.flyTo(coordinates, 12, { duration: 1 }); // Zoom to city
         addCityTemples(city); // Add temples inside the city
+        if (currentWeatherBox) {
+            currentWeatherBox.remove(); // Remove previous weather box
+        }
     });
 }
 
@@ -141,7 +142,14 @@ function getWeatherEmoji(code) {
     return weatherEmojis[code] || "☀️ Clear";
 }
 
-// Function to show and update the "Start Navigation" button when a temple is clicked
+// **Trip Planning Feature**
+
+// Global variables for tracking temples and their trip list
+let selectedTemples = []; // To track selected temples for trip
+let currentTripMarkers = []; // To store the markers for selected temples
+let tripInProgress = false; // Flag to track if a trip has started
+
+// Function to create and show the "Start Navigation" button when a temple is clicked
 function showNavigationButton(temple) {
     let navigationButton = document.querySelector('.start-navigation');
     if (!navigationButton) {
@@ -155,61 +163,170 @@ function showNavigationButton(temple) {
     navigationButton.onclick = function () {
         window.open(temple.link, '_blank');
     };
-
-    // Scroll to the button
     navigationButton.scrollIntoView({ behavior: "smooth" });
 }
 
-// Function to add temples inside a specific city
+// Function to create the "Plan A Trip" or "Add Temple to Trip List" button after a temple is selected
+function showPlanTripButton(temple) {
+    let planButton = document.querySelector('.plan-trip');
+
+    // If button doesn't exist, create it
+    if (!planButton) {
+        planButton = document.createElement('button');
+        planButton.className = 'plan-trip';
+        document.getElementById('map').appendChild(planButton); // Append to the map container
+    }
+
+    // Update button text based on trip progress
+    if (tripInProgress) {
+        planButton.innerText = 'Add Temple to Trip List';
+    } else {
+        planButton.innerText = 'Plan A Trip';
+    }
+
+    planButton.style.display = 'block'; // Show the button
+
+    planButton.onclick = function () {
+        if (!tripInProgress) {
+            // Start a new trip
+            tripInProgress = true;
+            planButton.innerText = 'Add Temple to Trip List'; // Update button text
+            addTempleToTrip(temple, planButton); // Add the selected temple to the trip
+        } else {
+            // Add more temples to the trip
+            addTempleToTrip(temple, planButton);
+        }
+    };
+}
+
+// Function to add a temple to the trip list
+function addTempleToTrip(temple, button) {
+    // Check if temple is already added to the trip list
+    if (selectedTemples.includes(temple)) {
+        button.innerText = 'Temple Already Added';
+        button.style.backgroundColor = 'red'; // Temporary feedback
+        setTimeout(() => {
+            button.innerText = 'Add Temple to Trip List'; // Reset button text
+            button.style.backgroundColor = ''; // Reset color
+        }, 2000);
+    } else {
+        // Add the temple to the trip list
+        selectedTemples.push(temple);
+        highlightTemple(temple);
+
+        button.innerText = 'Temple added to List'; // Show success text
+        button.style.backgroundColor = 'green'; // Provide feedback for successful addition
+        setTimeout(() => {
+            button.innerText = 'Add Temple to Trip List'; // Reset button text
+            button.style.backgroundColor = ''; // Reset color
+        }, 2000);
+    }
+}
+
+// Function to highlight the temple on the map when added to the trip
+function highlightTemple(temple) {
+    const templeMarker = L.marker(temple.coords, { 
+        icon: createHighlightedTempleIcon() 
+    })
+        .addTo(map)
+        .bindPopup(`<b>${temple.name}</b>`); // Add popup to highlight the temple
+
+    currentTripMarkers.push(templeMarker); // Store the temple marker for the trip
+}
+
+// Function to create highlighted temple icon
+function createHighlightedTempleIcon() {
+    return L.divIcon({
+        className: 'leaflet-div-icon-highlighted',
+        html: '<img src="https://uxwing.com/wp-content/themes/uxwing/download/festival-culture-religion/temple-icon.png" style="width: 50px; height: 50px; box-shadow: 0 0 10px 4px rgba(0, 121, 107, 0.7); border-radius: 50%;"/>',
+        iconSize: [50, 50],
+    });
+}
+
+// Function to clear all trip markers and reset the trip list
+function resetTrip() {
+    selectedTemples = [];
+    tripInProgress = false; // Reset trip progress flag
+    currentTripMarkers.forEach(marker => map.removeLayer(marker));
+    currentTripMarkers = [];
+    const planButton = document.querySelector('.plan-trip');
+    const navigationButton = document.querySelector('.start-navigation');
+
+    if (planButton) planButton.style.display = 'none';
+    if (navigationButton) navigationButton.style.display = 'none';
+
+    alert('Trip has been cancelled!');
+}
+
+function handleZoomOut() {
+    // Check if zoom level is less than 12 (zoom out condition)
+    if (map.getZoom() < 12) {
+        // Remove all temple markers (this includes highlighted ones)
+        currentTripMarkers.forEach(marker => map.removeLayer(marker));
+        currentTripMarkers = []; // Reset the array of markers
+
+        // Set to store cities that have selected temples
+        const citiesWithSelectedTemples = new Set(selectedTemples.map(temple => temple.city));
+
+        // Remove temple markers and only show city blips
+        Object.keys(cityCoordinates).forEach(city => {
+            if (citiesWithSelectedTemples.has(city)) {
+                // Create a highlighted city blip for cities with selected temples
+                const cityBlip = L.marker(cityCoordinates[city], {
+                    icon: createHighlightedCityIcon(), // Create highlighted city icon
+                })
+                    .addTo(map)
+                    .bindPopup(`<b>${city}</b>`);
+                
+                currentTripMarkers.push(cityBlip); // Add city blip to the current trip markers
+            }
+        });
+
+        // Remove any weather box when zoomed out
+        if (currentWeatherBox) {
+            currentWeatherBox.remove();
+        }
+    }
+}
+
+
+// Function to create highlighted city icon
+function createHighlightedCityIcon() {
+    return L.divIcon({
+        className: 'leaflet-div-icon-highlighted-city',
+        html: '<div style="width: 40px; height: 40px; background-color: rgba(0, 121, 107, 0.9); border-radius: 50%; box-shadow: 0 0 15px 6px rgba(0, 121, 107, 0.7);"></div>',
+        iconSize: [40, 40], // Slightly bigger size for better visibility
+    });
+}
+
+// Event listener for zoom changes
+map.on('zoomend', function () {
+    if (map.getZoom() >= 12) {
+        // Add city temples again when zoomed in
+        Object.keys(cityCoordinates).forEach(function (city) {
+            if (selectedTemples.some(temple => temple.city === city)) {
+                addCityTemples(city); // Add temples if city has selected temples
+            }
+        });
+    }
+});
+
+
+// Function to handle city temple selection and temple click
 function addCityTemples(city) {
-    clearMarkers(city); // Clear existing markers
+    clearMarkers(city); // Clear existing city markers
 
     cityMarkers[city] = cityTemples[city].map(temple => {
         const templeMarker = L.marker(temple.coords, { icon: createTempleIcon() })
             .addTo(map)
-            .bindPopup(`<b>${temple.name}</b>`); // Popup with temple name
+            .bindPopup(`<b>${temple.name}</b>`); // Add temple popup
 
         templeMarker.on('click', function () {
-            showNavigationButton(temple); // Show navigation button
-            displayWeather(temple.coords); // Display weather
+            showNavigationButton(temple); // Show "Start Navigation" button
+            displayWeather(temple.coords); // Display temple weather info
+            showPlanTripButton(temple); // Show "Plan Trip" button
         });
 
         return templeMarker;
     });
 }
-
-// Event listener for zoom changes to handle weather box and markers
-map.on('zoomend', function () {
-    if (map.getZoom() < 12) {
-        // Clear all temple markers when zoomed out
-        Object.keys(cityMarkers).forEach(clearMarkers);
-        if (currentWeatherBox) {
-            currentWeatherBox.remove(); // Remove weather box if zoomed out
-        }
-    }
-});
-
-// Event listener for city blips
-function createCityBlip(city, coordinates) {
-    var cityBlip = L.marker(coordinates, { icon: createTempleIcon() })
-        .addTo(map)
-        .bindPopup(`${city.charAt(0).toUpperCase() + city.slice(1)} City`);
-
-    cityBlip.on('click', function () {
-        map.flyTo(coordinates, 12, { duration: 1 }); // Zoom to city
-        addCityTemples(city); // Add temples inside the city
-        if (currentWeatherBox) {
-            currentWeatherBox.remove(); // Remove previous weather box
-        }
-    });
-}
-
-// City marker creation and handling
-Object.keys(cityCoordinates).forEach(function (city) {
-    createCityBlip(city, cityCoordinates[city]);
-});
-
-// For mobile optimization: Reduce map responsiveness for smoother performance
-map.options.touchZoom = true; // Enable touch zoom for mobile
-map.options.scrollWheelZoom = false; // Disable scroll zoom for smoother zoom transitions on mobile
-
