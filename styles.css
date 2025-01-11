@@ -6,6 +6,8 @@ body, html {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f7f6; /* Soft light background */
     color: #444;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Heading Styles */
@@ -13,30 +15,32 @@ h1 {
     text-align: center;
     color: #00796b; /* Dark Teal */
     font-size: 2.8em;
-    margin-top: 0px; /* Distance from top */
+    margin-top: 20px; /* Distance from top */
     padding-top: 0;
     padding: 0;
+    margin-bottom: 0; /* Remove bottom margin to bring it closer to the map */
 }
 
 /* Main Container */
 .container {
-    width: 80%;
+    width: 100%;
     margin: 0 auto;
-    padding-top: 10px; /* Space from the top of the page */
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex-grow: 1; /* Ensures the container grows to take available space */
+    justify-content: center; /* Center align content vertically */
 }
 
 /* Container Spacing (Reduce the gap for uniformity) */
 .container > * {
-    margin-bottom: 15px; /* Consistent gap between all sections */
+    margin-bottom: 10px; /* Consistent gap between all sections */
 }
 
 /* Map Container */
 #map {
     width: 100%;
-    height: 540px;
+    height: 70vh; /* Adjust height to take up 70% of the viewport height */
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative; /* Allow absolute positioning of weather box inside the map */
@@ -115,6 +119,17 @@ h1 {
     margin: 5px 0;
 }
 
+/* Footer Styling */
+footer {
+    margin-top: auto; /* Push footer to the bottom of the page */
+    background-color: #00796b;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 1em;
+    width: 100%;
+}
+
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
     .container {
@@ -126,7 +141,7 @@ h1 {
     }
 
     #map {
-        height: 400px;
+        height: 50vh; /* Adjust height on smaller screens */
     }
 
     /* Make the weather info box smaller on mobile */
