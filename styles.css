@@ -30,7 +30,7 @@ h1 {
 
 /* Container Spacing (Reduce the gap for uniformity) */
 .container > * {
-    margin-bottom: 10px; /* Consistent gap between all sections */
+    margin-bottom: 15px; /* Consistent gap between all sections */
 }
 
 /* Map Container */
