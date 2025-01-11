@@ -175,17 +175,17 @@ h1 {
         padding: 8px;
     }
 
-    /* Adjust navigation button for mobile screens */
-    .start-navigation, .plan-trip, .start-trip {
-        width: 80%; /* Adjust width for mobile */
-        left: 50%; /* Center horizontally */
-        transform: translateX(-50%); /* Center alignment */
-        padding: 12px;
-        font-size: 1em;
-    }
+ /* Adjust navigation button for mobile screens */
+.start-navigation, .plan-trip, .start-trip {
+    width: 80%; /* Set the width to 80% for better fit */
+    max-width: 300px; /* Set a max-width to avoid overflow */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Center alignment */
+    padding: 12px;
+    font-size: 1em;
+}
 
-    .plan-trip {
-        font-size: 0.9em; /* Smaller font size for mobile */
-        padding: 10px 20px; /* Smaller padding */
-    }
+.plan-trip {
+    font-size: 0.9em; /* Smaller font size for mobile */
+    padding: 10px 20px; /* Smaller padding */
 }
