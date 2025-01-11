@@ -1,0 +1,185 @@
+/* General Body and HTML Styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6; /* Soft light background */
+    color: #444;
+}
+
+/* Heading Styles */
+h1 {
+    text-align: center;
+    color: #00796b; /* Dark Teal */
+    font-size: 2.8em;
+    margin-top: 20px; /* Distance from top */
+    padding: 0;
+}
+
+/* Main Container */
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 20px; /* Space from the top of the page */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Container Spacing (Reduce the gap for uniformity) */
+.container > * {
+    margin-bottom: 15px; /* Consistent gap between all sections */
+}
+
+/* Map Container */
+#map {
+    width: 100%;
+    height: 540px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative; /* Allow absolute positioning of weather box inside the map */
+    margin-top: 10px; /* Reduced margin from the heading */
+}
+
+/* Custom Marker Icon Styles */
+.leaflet-div-icon img {
+    width: 35px;
+    height: 35px;
+}
+
+/* Popup Styling */
+.leaflet-popup-content {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #00796b;
+    background-color: #e0f7fa;
+    border: 2px solid #00796b;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Start Navigation Button */
+.start-navigation {
+    display: block;
+    width: auto;
+    max-width: 250px;
+    padding: 12px 18px;
+    font-size: 1.2em;
+    background-color: #00796b; /* Dark Teal */
+    color: #fff;
+    border: 2px solid #004d40;
+    border-radius: 30px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin: 10px 0; /* Reduced margin to move the button up */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Start Navigation Button Hover and Active States */
+.start-navigation:hover {
+    background-color: #004d40;
+    border-color: #004d40;
+    transform: scale(1.05);
+}
+
+.start-navigation:active {
+    transform: scale(0.98);
+}
+
+/* Weather Info Box (Top-Right Corner inside the map) */
+.weather-info-box {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    z-index: 1000; /* Ensure it is above the map */
+}
+
+.weather-info-box h4 {
+    margin-top: 0;
+    font-size: 16px;
+}
+
+.weather-info-box p {
+    margin: 5px 0;
+}
+
+/* New Plan Trip and Start Trip Buttons Inside the Map */
+.plan-trip, .start-trip {
+    position: absolute;
+    bottom: 20px; /* Positioned at the bottom */
+    right: 20px; /* Aligned to the right */
+    background-color: rgba(0, 121, 107, 0.9); /* Darker Teal for consistency */
+    color: white;
+    padding: 14px 24px; /* Increased padding for better touch interaction */
+    border-radius: 30px; /* Rounded corners for a clean look */
+    font-size: 1.1em; /* Slightly adjusted font size */
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+    transition: all 0.3s ease;
+    z-index: 1000; /* Make sure it is above the map */
+}
+
+/* Hover Effect */
+.plan-trip:hover, .start-trip:hover {
+    background-color: rgba(0, 121, 107, 1); /* Solid color on hover */
+    transform: scale(1.05); /* Slight zoom for hover effect */
+}
+
+/* Active Effect */
+.plan-trip:active, .start-trip:active {
+    transform: scale(0.98); /* Slight shrink effect when clicked */
+}
+
+/* Adjust Button Colors on Disabled State */
+.plan-trip.disabled, .start-trip.disabled {
+    background-color: rgba(0, 121, 107, 0.5); /* Disabled color */
+    cursor: not-allowed;
+}
+
+/* Highlighted Marker for Selected Temple */
+.leaflet-div-icon-selected {
+    box-shadow: 0 0 15px 5px rgba(0, 121, 107, 0.7); /* Soft glowing effect */
+    border-radius: 50%; /* Maintain circle shape */
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    #map {
+        height: 400px;
+    }
+
+    /* Make the weather info box smaller on mobile */
+    .weather-info-box {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    /* Adjust navigation button for mobile screens */
+    .start-navigation, .plan-trip, .start-trip {
+        width: 100%;
+        max-width: none;
+        padding: 12px;
+        font-size: 1em;
+    }
+}
