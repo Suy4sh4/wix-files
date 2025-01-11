@@ -6,7 +6,6 @@ body, html {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f7f6; /* Soft light background */
     color: #444;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 /* Heading Styles */
@@ -15,29 +14,32 @@ h1 {
     color: #00796b; /* Dark Teal */
     font-size: 2.8em;
     margin-top: 20px; /* Distance from top */
-    padding-top: 0;
-    margin-bottom: 10px; /* Reduce the gap after the heading */
+    padding: 0;
 }
 
 /* Main Container */
 .container {
-    width: 100%; /* Ensure it takes full width */
+    width: 80%;
     margin: 0 auto;
-    padding-top: 20px; /* Adjusted space from the top */
+    padding-top: 20px; /* Space from the top of the page */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+/* Container Spacing (Reduce the gap for uniformity) */
+.container > * {
+    margin-bottom: 15px; /* Consistent gap between all sections */
+}
+
 /* Map Container */
 #map {
-    width: 90%; /* Adjust width to leave some space on both sides */
-    max-width: 100%; /* Ensure it doesn’t overflow */
+    width: 100%;
     height: 540px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative; /* Allow absolute positioning of weather box inside the map */
     margin-top: 10px; /* Reduced margin from the heading */
-    margin-bottom: 20px; /* Add space below the map */
 }
 
 /* Custom Marker Icon Styles */
@@ -112,6 +114,47 @@ h1 {
     margin: 5px 0;
 }
 
+/* New Plan Trip and Start Trip Buttons Inside the Map */
+.plan-trip, .start-trip {
+    position: absolute;
+    bottom: 20px; /* Positioned at the bottom */
+    right: 20px; /* Aligned to the right */
+    background-color: rgba(0, 121, 107, 0.9); /* Darker Teal for consistency */
+    color: white;
+    padding: 14px 24px; /* Increased padding for better touch interaction */
+    border-radius: 30px; /* Rounded corners for a clean look */
+    font-size: 1.1em; /* Slightly adjusted font size */
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+    transition: all 0.3s ease;
+    z-index: 1000; /* Make sure it is above the map */
+}
+
+/* Hover Effect */
+.plan-trip:hover, .start-trip:hover {
+    background-color: rgba(0, 121, 107, 1); /* Solid color on hover */
+    transform: scale(1.05); /* Slight zoom for hover effect */
+}
+
+/* Active Effect */
+.plan-trip:active, .start-trip:active {
+    transform: scale(0.98); /* Slight shrink effect when clicked */
+}
+
+/* Adjust Button Colors on Disabled State */
+.plan-trip.disabled, .start-trip.disabled {
+    background-color: rgba(0, 121, 107, 0.5); /* Disabled color */
+    cursor: not-allowed;
+}
+
+/* Highlighted Marker for Selected Temple */
+.leaflet-div-icon-selected {
+    box-shadow: 0 0 15px 5px rgba(0, 121, 107, 0.7); /* Soft glowing effect */
+    border-radius: 50%; /* Maintain circle shape */
+}
+
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
     .container {
@@ -133,7 +176,7 @@ h1 {
     }
 
     /* Adjust navigation button for mobile screens */
-    .start-navigation {
+    .start-navigation, .plan-trip, .start-trip {
         width: 100%;
         max-width: none;
         padding: 12px;
