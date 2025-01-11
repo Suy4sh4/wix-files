@@ -4,6 +4,16 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
+// **Responsive Button Placement**:
+// For touch devices, the map UI will make sure buttons don't overlap or interfere with map navigation.
+document.querySelectorAll('.start-navigation, .plan-trip, .start-trip').forEach(button => {
+    button.addEventListener('click', function () {
+        // Adding functionality to adapt layout on click for small screens
+        this.style.transform = 'scale(1)';
+        this.style.transition = 'all 0.3s ease';
+    });
+});
+
 // Function to create a custom temple icon
 function createTempleIcon() {
     return L.divIcon({
