@@ -177,9 +177,15 @@ h1 {
 
     /* Adjust navigation button for mobile screens */
     .start-navigation, .plan-trip, .start-trip {
-        width: 100%;
-        max-width: none;
+        width: 80%; /* Adjust width for mobile */
+        left: 50%; /* Center horizontally */
+        transform: translateX(-50%); /* Center alignment */
         padding: 12px;
         font-size: 1em;
+    }
+
+    .plan-trip {
+        font-size: 0.9em; /* Smaller font size for mobile */
+        padding: 10px 20px; /* Smaller padding */
     }
 }
