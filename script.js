@@ -1,42 +1,8 @@
     var map = L.map('map').setView([19.0760, 72.8777], 6); // Default view: Maharashtra
-    
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
-
-    // Initialize city dropdown
-function createCityDropdown() {
-    const dropdown = document.createElement('select');
-    dropdown.id = 'dropdown2';  // Assign an ID for easy access
-    
-    // Add a default "Select City" option
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.innerText = 'Select City';
-    dropdown.appendChild(defaultOption);
-    
-    // Add city options dynamically
-    Object.keys(cityCoordinates).forEach(city => {
-        const option = document.createElement('option');
-        option.value = city;
-        option.innerText = city.charAt(0).toUpperCase() + city.slice(1); // Capitalize city names
-        dropdown.appendChild(option);
-    });
-    
-    // Append dropdown to the map container or body
-    document.querySelector('.container').appendChild(dropdown);
-
-    // Event listener for city selection
-    dropdown.addEventListener('change', function() {
-        const selectedCity = this.value;
-        if (selectedCity && cityCoordinates[selectedCity]) {
-            map.flyTo(cityCoordinates[selectedCity], 12); // Fly to selected city
-        }
-    });
-}
-
-// Call the function to create and show the dropdown
-createCityDropdown();
 
     // **Responsive Button Placement**:
     // For touch devices, the map UI will make sure buttons don't overlap or interfere with map navigation.
@@ -116,7 +82,7 @@ document.querySelectorAll('.templeMarker').forEach(marker => {
         document.getElementById('temple-heading').innerText = templeName; // Update the heading
     }
 
-// Function to create city blips with zoom functionality
+    // Function to create city blips with zoom functionality
 function createCityBlip(city, coordinates) {
     var cityBlip = L.marker(coordinates, { icon: createTempleIcon() })
         .addTo(map)
@@ -125,13 +91,6 @@ function createCityBlip(city, coordinates) {
     cityBlip.on('click', function () {
         map.flyTo(coordinates, 12, { duration: 1 }); // Zoom to city
         addCityTemples(city); // Add temples inside the city
-        
-        // Update city dropdown selection
-        document.getElementById('dropdown2').value = city;
-        
-        // Update temple dropdown based on the selected city
-        updateTempleDropdown(city);
-        
         if (currentWeatherBox) {
             currentWeatherBox.remove(); // Remove previous weather box
         }
