@@ -252,3 +252,33 @@ h1 {
         outline: none;
     }
 }
+/* Reset Trip Button Styles */
+.reset-trip {
+    display: none; /* Initially hidden */
+    width: auto;
+    max-width: 250px;
+    padding: 12px 18px;
+    font-size: 1.2em;
+    background-color: #d32f2f; /* Red color for reset */
+    color: #fff;
+    border: 2px solid #b71c1c; /* Darker red border */
+    border-radius: 30px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin: 10px 0; /* Space above and below */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Reset Trip Button Hover and Active States */
+.reset-trip:hover {
+    background-color: #b71c1c; /* Darker red on hover */
+    border-color: #b71c1c; /* Match border color on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.reset-trip:active {
+    transform: scale(0.98); /* Slightly shrink when clicked */
+}
