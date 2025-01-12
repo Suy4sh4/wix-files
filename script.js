@@ -1,4 +1,8 @@
     var map = L.map('map').setView([19.0760, 72.8777], 6); // Default view: Maharashtra
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
     // Initialize city dropdown
 function createCityDropdown() {
@@ -33,11 +37,6 @@ function createCityDropdown() {
 
 // Call the function to create and show the dropdown
 createCityDropdown();
-
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
 
     // **Responsive Button Placement**:
     // For touch devices, the map UI will make sure buttons don't overlap or interfere with map navigation.
