@@ -1,5 +1,40 @@
     var map = L.map('map').setView([19.0760, 72.8777], 6); // Default view: Maharashtra
 
+    // Initialize city dropdown
+function createCityDropdown() {
+    const dropdown = document.createElement('select');
+    dropdown.id = 'city-dropdown';  // Assign an ID for easy access
+    
+    // Add a default "Select City" option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.innerText = 'Select City';
+    dropdown.appendChild(defaultOption);
+    
+    // Add city options dynamically
+    Object.keys(cityCoordinates).forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.innerText = city.charAt(0).toUpperCase() + city.slice(1); // Capitalize city names
+        dropdown.appendChild(option);
+    });
+    
+    // Append dropdown to the map container or body
+    document.querySelector('.container').appendChild(dropdown);
+
+    // Event listener for city selection
+    dropdown.addEventListener('change', function() {
+        const selectedCity = this.value;
+        if (selectedCity && cityCoordinates[selectedCity]) {
+            map.flyTo(cityCoordinates[selectedCity], 12); // Fly to selected city
+        }
+    });
+}
+
+// Call the function to create and show the dropdown
+createCityDropdown();
+
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
@@ -82,7 +117,7 @@ document.querySelectorAll('.templeMarker').forEach(marker => {
         document.getElementById('temple-heading').innerText = templeName; // Update the heading
     }
 
-    // Function to create city blips with zoom functionality
+// Function to create city blips with zoom functionality
 function createCityBlip(city, coordinates) {
     var cityBlip = L.marker(coordinates, { icon: createTempleIcon() })
         .addTo(map)
@@ -91,6 +126,13 @@ function createCityBlip(city, coordinates) {
     cityBlip.on('click', function () {
         map.flyTo(coordinates, 12, { duration: 1 }); // Zoom to city
         addCityTemples(city); // Add temples inside the city
+        
+        // Update city dropdown selection
+        document.getElementById('dropdown2').value = city;
+        
+        // Update temple dropdown based on the selected city
+        updateTempleDropdown(city);
+        
         if (currentWeatherBox) {
             currentWeatherBox.remove(); // Remove previous weather box
         }
@@ -300,7 +342,7 @@ function showPlanTripButton(temple) {
         });
     }
 
-    // Function to reset the trip
+ // Function to reset the trip
 function resetTrip() {
     selectedTemples = [];
     tripInProgress = false; // Reset trip progress flag
@@ -315,22 +357,29 @@ function resetTrip() {
     if (navigationButton) navigationButton.style.display = 'none';
     if (resetButton) resetButton.style.display = 'none'; // Hide reset button
 
+    // Reset the map view to the default location and zoom level
+    map.setView([19.0760, 72.8777], 6); // Example: Reset to Mumbai, Maharashtra
+
+    // Reset the heading to its default state
+    updateTempleHeading("Select A Temple to Visit"); // Reset heading text
+
     alert('Trip has been cancelled! Everything is reset.');
 }
 
 // Add event listener for the reset trip button
 document.addEventListener('click', function (event) {
     if (event.target.classList.contains('reset-trip')) {
-        resetTrip();
+        resetTrip(); // Call the resetTrip function when the button is clicked
     }
 });
 
 // Example event listener for when a temple is clicked
-document.querySelectorAll('.templeMarker ').forEach(marker => {
-    marker.addEventListener('click', function () {
-        const temple = this.dataset.temple; // Assuming each marker has a data attribute for the temple
-        showPlanTripButton(temple); // Show the plan trip button
-        showNavigationButton(temple); // Show the navigation button
+document.querySelectorAll('.templeMarker').forEach(marker => {
+    marker.addEventListener('click', function() {
+        const templeName = this.getAttribute('data-temple-name'); // Get the temple name from the marker
+        updateTempleHeading(templeName); // Update the heading with the selected temple name
+        showNavigationButton(marker); // Show the navigation button when a temple is clicked
+        showPlanTripButton(marker); // Show the plan trip button when a temple is clicked
     });
 });
 
