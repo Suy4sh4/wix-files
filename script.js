@@ -82,11 +82,14 @@ document.querySelectorAll('.templeMarker').forEach(marker => {
         document.getElementById('temple-heading').innerText = templeName; // Update the heading
     }
 
-    // Function to create city blips with zoom functionality
+// Function to create city blips with zoom functionality
 function createCityBlip(city, coordinates) {
     var cityBlip = L.marker(coordinates, { icon: createTempleIcon() })
         .addTo(map)
         .bindPopup(`${city.charAt(0).toUpperCase() + city.slice(1)} City`);
+
+    // Store the city marker in the cityMarkers object
+    cityMarkers[city] = [cityBlip]; // Store as an array for consistency
 
     cityBlip.on('click', function () {
         map.flyTo(coordinates, 12, { duration: 1 }); // Zoom to city
@@ -97,10 +100,19 @@ function createCityBlip(city, coordinates) {
     });
 }
 
-    // Add all city blips
-    Object.keys(cityCoordinates).forEach(function (city) {
-        createCityBlip(city, cityCoordinates[city]);
-    });
+// Add all city blips
+Object.keys(cityCoordinates).forEach(function (city) {
+    createCityBlip(city, cityCoordinates[city]);
+});
+
+// Add the dropdown event listener
+document.getElementById('dropdown2').addEventListener('change', function() {
+    const selectedCity = this.value; // Get the selected city name
+    if (cityMarkers[selectedCity]) {
+        // Trigger the click event on the corresponding city marker
+        cityMarkers[selectedCity][0].fire('click'); // Trigger click event on the first marker
+    }
+});
 
     // Function to remove markers from a city
     function clearMarkers(city) {
