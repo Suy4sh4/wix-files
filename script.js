@@ -14,6 +14,7 @@ document.querySelectorAll('.start-navigation, .plan-trip, .start-trip').forEach(
     });
 });
 
+
 // Function to create a custom temple icon
 function createTempleIcon() {
     return L.divIcon({
@@ -57,8 +58,27 @@ var cityTemples = {
         {coords: [20.8866422, 74.7671309], name: "Temple I", link: "https://www.google.com/maps/place/Dhule,+Maharashtra/@20.8866,74.7671,101a,35y,85.55h,77.23t/data=!3m1!1e3!4m6!3m5!1s0x3bdba09abcd3!8m2!3d20.8867!4d74.7672!16zL20vMDJucGs3"}
     ]
 };
+
+// Function to update the heading when a temple is selected
+function updateTempleHeading(templeName) {
+    document.getElementById('selectedTempleHeading').innerText = templeName;
+  }
+  
+  // Example event listener for when a temple is clicked
+  document.querySelectorAll('.templeMarker').forEach(marker => {
+    marker.addEventListener('click', function() {
+      const templeName = marker.getAttribute('data-temple-name');
+      updateTempleHeading(templeName);
+    });
+  });
+
 // City markers storage
 var cityMarkers = {};
+
+// Function to update the heading when a temple is selected
+function updateTempleHeading(templeName) {
+    document.getElementById('temple-heading').innerText = templeName; // Update the heading
+}
 
 // Function to create city blips with zoom functionality
 function createCityBlip(city, coordinates) {
@@ -320,7 +340,7 @@ map.on('zoomend', function () {
     }
 });
 
-// Function to handle city temple selection and temple click
+// Function to add city temples
 function addCityTemples(city) {
     clearMarkers(city); // Clear existing city markers
 
@@ -333,6 +353,7 @@ function addCityTemples(city) {
             showNavigationButton(temple); // Show "Start Navigation" button
             displayWeather(temple.coords); // Display temple weather info
             showPlanTripButton(temple); // Show "Plan Trip" button
+            updateTempleHeading(temple.name); // Update the heading with the selected temple name
         });
 
         return templeMarker;
