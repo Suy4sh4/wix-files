@@ -14,14 +14,14 @@ h1 {
     color: #00796b; /* Dark Teal */
     font-size: 2.8em;
     margin-top: 20px; /* Distance from top */
+    margin-bottom: 10px; /* Reduced margin to decrease space below the heading */
     padding: 0;
 }
 
-/* Main Container */
 .container {
     width: 80%;
     margin: 0 auto;
-    padding-top: 20px; /* Space from the top of the page */
+    padding-top: 10px; /* Reduced space from the top of the page */
     display: flex;
     flex-direction: column;
     align-items: center;
