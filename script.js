@@ -3,7 +3,7 @@
     // Initialize city dropdown
 function createCityDropdown() {
     const dropdown = document.createElement('select');
-    dropdown.id = 'city-dropdown';  // Assign an ID for easy access
+    dropdown.id = 'dropdown2';  // Assign an ID for easy access
     
     // Add a default "Select City" option
     const defaultOption = document.createElement('option');
