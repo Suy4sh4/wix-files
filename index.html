@@ -1,36 +1,134 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temple Locations</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <style>
-        .leaflet-div-icon {
-            background: none;
-            border: none;
-            box-shadow: none;
-            width: 40px;
-            height: 40px;
-        }
-        #weather-info {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #e0f7fa;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Fleeca Bank - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://ai-public.creatie.ai/gen_page/tailwind-custom.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.5?plugins=forms@0.5.7,typography@0.5.13,aspect-ratio@0.4.2,container-queries@0.1.1"></script>
+    <script src="https://ai-public.creatie.ai/gen_page/tailwind-config.min.js" data-color="#000000" data-border-radius="small"></script>
 </head>
-<body>
-    <div class="container">
-        <h1 id="temple-heading">Select A Temple to Visit</h1>
-        <div id="map"></div>
-        <div id="navigation-container"></div> <!-- Container for the navigation button -->
-    </div>    
-
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-gray-100 font-[&#39;Inter&#39;]">
+    <div class="flex min-h-screen">
+        <aside class="w-64 backdrop-blur-xl bg-slate-800/30 p-6 flex flex-col transition-all duration-300 border-r border-slate-700/30">
+            <div class="mb-12">
+                <span class="text-2xl font-bold">FLEECA</span>
+                <div class="text-xl">B N K</div>
+            </div>
+            <nav class="space-y-6">
+                <a href="#" class="flex items-center space-x-3 text-blue-400 bg-slate-700/50 p-3 rounded-xl hover:bg-slate-700/70 transition-all">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-blue-400 hover:bg-slate-700/50 p-3 rounded-xl transition-all">
+                    <i class="fas fa-wallet"></i>
+                    <span>Accounts</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-blue-400 hover:bg-slate-700/50 p-3 rounded-xl transition-all">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Cards</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-blue-400 hover:bg-slate-700/50 p-3 rounded-xl transition-all">
+                    <i class="fas fa-cog"></i>
+                    <span>Admin Actions</span>
+                </a>
+            </nav>
+        </aside>
+        <main class="flex-1 p-8"><div class="flex justify-end mb-6"><button class="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all"><i class="fas fa-sign-out-alt mr-2"></i><span>Logout</span></button></div>
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-8 mt-4">
+                    <h1 class="text-2xl font-bold mb-2"><div class="mb-4"><h2 class="text-2xl font-bold text-blue-400">Welcome, Suyash</h2></div>Your Account</h1>
+                    <p class="text-gray-400">View your account balance and details.</p>
+                </div>
+                
+                <div class="grid grid-cols-12 gap-8 mt-8">
+                    <div class="col-span-8">
+                        <div class="backdrop-blur-xl bg-slate-800/40 shadow-lg rounded-xl p-8 mb-8 border border-slate-700/30 hover:shadow-blue-500/10 transition-all duration-300">
+                            <h2 class="text-sm text-gray-400 mb-2">Personal account</h2>
+                            <div class="flex items-baseline mb-6">
+                                <span class="text-4xl font-bold">$95,110.00</span>
+                                <button class="ml-2 text-gray-400">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                            <div class="bg-gray-700 rounded p-4">
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-400">IBAN</span>
+                                    <span class="ml-2">**** **** **** 76 3218</span>
+                                    <button class="ml-auto text-custom">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="backdrop-blur-xl bg-slate-800/40 shadow-lg rounded-xl p-8 border border-slate-700/30 hover:shadow-purple-500/10 transition-all duration-300">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="flex items-center">
+                                    <span>Spendings</span>
+                                    <p class="text-sm text-gray-400 ml-2">See your income and expense</p>
+                                </h2>
+                                <div class="flex items-center space-x-2 text-sm">
+                                    <span>15 Jan 2025</span>
+                                    <span>→</span>
+                                    <span>21 Jan 2025</span>
+                                    <button class="text-custom">
+                                        <i class="fas fa-calendar"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="spendingChart" class="h-64"></div>
+                        </div>
+                    </div>
+                    <div class="col-span-4">
+                        <div class="backdrop-blur-xl bg-slate-800/40 shadow-lg rounded-xl p-8 mb-8 border border-slate-700/30 hover:shadow-green-500/10 transition-all duration-300">
+                            <h2 class="mb-4">Quick Actions</h2>
+                            <p class="text-sm text-gray-400 mb-4">Transfer, deposit, or withdraw funds.</p>
+                            <div class="space-y-4">
+                                <input type="text" placeholder="Amount" class="w-full bg-slate-700/50 border border-slate-600/30 rounded-lg p-3 text-gray-100 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"/>
+                                <input type="text" placeholder="Recipient(IBAN) eg. 543212" class="w-full bg-slate-700/50 border border-slate-600/30 rounded-lg p-3 text-gray-100 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"/>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <button class="!rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium py-3 transition-all shadow-lg hover:shadow-blue-500/50">Deposit</button>
+                                    <button class="!rounded-xl bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-gray-100 font-medium py-3 transition-all shadow-lg hover:shadow-slate-700/50">Transfer</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="backdrop-blur-xl bg-slate-800/40 shadow-lg rounded-xl p-8 border border-slate-700/30 hover:shadow-pink-500/10 transition-all duration-300">
+                            <h2 class="flex items-center justify-between mb-2">
+                                <span>Transactions</span>
+                                <i class="fas fa-history text-custom"></i>
+                            </h2>
+                            <p class="text-sm text-gray-400 mb-6">Check your transactions history.</p>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-red-900 rounded-full flex items-center justify-center text-red-500">
+                                            <i class="fas fa-arrow-up"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <div class="text-sm font-medium">Withdraw</div>
+                                            <div class="text-xs text-gray-400">20 Jan 2025 - 22:31</div>
+                                        </div>
+                                    </div>
+                                    <span class="text-red-500">-$3,450.00</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-custom bg-opacity-20 rounded-full flex items-center justify-center text-custom">
+                                            <i class="fas fa-arrow-down"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <div class="text-sm font-medium">Deposit</div>
+                                            <div class="text-xs text-gray-400">15 Jan 2025 - 17:14</div>
+                                        </div>
+                                    </div>
+                                    <span class="text-custom">+$19,900.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>const chart = echarts.init(document.getElementById('spendingChart')); const option = { animation: true, tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } }, legend: { data: ['Income', 'Expense'], textStyle: { color: '#9CA3AF' } }, grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true }, xAxis: { type: 'category', data: ['Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue'], axisLine: { lineStyle: { color: '#475569' } }, axisLabel: { color: '#9CA3AF' } }, yAxis: { type: 'value', axisLine: { lineStyle: { color: '#475569' } }, axisLabel: { color: '#9CA3AF' }, splitLine: { lineStyle: { color: '#475569' } } }, series: [ { name: 'Income', type: 'bar', data: [5000, 20000, 8000, 3000, 12000, 15000, 7000], itemStyle: { color: '#3B82F6' }, emphasis: { itemStyle: { color: '#60A5FA' } } }, { name: 'Expense', type: 'bar', data: [3000, 5000, 6000, 2000, 8000, 4000, 3000], itemStyle: { color: '#EF4444' }, emphasis: { itemStyle: { color: '#F87171' } } } ] }; chart.setOption(option); window.addEventListener('resize', () => chart.resize()); const sidebarLinks = document.querySelectorAll('#id-18 a'); sidebarLinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); sidebarLinks.forEach(l => l.classList.remove('bg-slate-700', 'text-blue-400')); link.classList.add('bg-slate-700', 'text-blue-400'); }); }); const sidebar = document.querySelector('#id-14'); const toggleBtn = document.createElement('button'); toggleBtn.innerHTML = '<i class="fas fa-bars"></i>'; toggleBtn.className = 'absolute top-4 right-4 text-gray-400 hover:text-blue-400'; sidebar.appendChild(toggleBtn); let sidebarCollapsed = false; toggleBtn.addEventListener('click', () => { sidebarCollapsed = !sidebarCollapsed; sidebar.style.width = sidebarCollapsed ? '80px' : '256px'; document.querySelectorAll('#id-18 span').forEach(span => { span.style.display = sidebarCollapsed ? 'none' : 'block'; }); });</script>
